@@ -40,24 +40,31 @@ export default function PostsList() {
             });
 
             const data = await response.json();
-            if (data.success) {
+            if (data.success && Array.isArray(data.posts)) {
                 setPosts(data.posts);
             } else {
-                setError('Erro ao carregar posts');
+                setPosts([]);
+                if (!data.success) setError('Erro ao carregar posts');
             }
         } catch (err) {
             setError('Erro de conexão');
+            setPosts([]);
         } finally {
             setIsLoading(false);
         }
     };
 
     const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
+        if (!dateString) return '-';
+        try {
+            return new Date(dateString).toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        } catch (e) {
+            return dateString;
+        }
     };
 
     if (isLoading) {
@@ -103,23 +110,23 @@ export default function PostsList() {
                             </thead>
                             <tbody className="divide-y divide-dark-700">
                                 {posts.map((post) => (
-                                    <tr key={post.id} className="hover:bg-dark-700/50 transition-colors">
+                                    <tr key={post.id || Math.random().toString()} className="hover:bg-dark-700/50 transition-colors">
                                         <td className="px-6 py-4">
                                             <p className="font-medium text-gray-100 mb-1 line-clamp-1">
-                                                {post.title}
+                                                {post.title || 'Sem título'}
                                             </p>
                                             <div className="flex items-center gap-2">
-                                                <span className={`text-xs px-2 py-0.5 rounded-full ${post.status === 'published'
+                                                <span className={`text-xs px-2 py-0.5 rounded-full ${(post.status || 'published') === 'published'
                                                         ? 'bg-green-500/20 text-green-400'
                                                         : 'bg-yellow-500/20 text-yellow-400'
                                                     }`}>
-                                                    {post.status === 'published' ? 'Publicado' : 'Rascunho'}
+                                                    {(post.status || 'published') === 'published' ? 'Publicado' : 'Rascunho'}
                                                 </span>
-                                                <span className="text-xs text-gray-500">/{post.slug}</span>
+                                                <span className="text-xs text-gray-500">/{post.slug || 'no-slug'}</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-center text-gray-400">
-                                            {post.views.toLocaleString()}
+                                            {(post.views || 0).toLocaleString()}
                                         </td>
                                         <td className="px-6 py-4 text-center text-gray-400 text-sm">
                                             {formatDate(post.createdAt)}

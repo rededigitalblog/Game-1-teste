@@ -8,13 +8,13 @@ publish = "dist"
 # KV Namespaces
 [[kv_namespaces]]
 binding = "GUIDES_KV"
-id = "SUBSTITUA_PELO_SEU_ID"
-preview_id = "SUBSTITUA_PELO_SEU_PREVIEW_ID"
+id = "07e092082a694ab8a3afc30a31c47142"
+preview_id = "b589f51706524d9ca7f3c81935539b3d"
 
 [[kv_namespaces]]
 binding = "METADATA_KV"
-id = "SUBSTITUA_PELO_SEU_ID"
-preview_id = "SUBSTITUA_PELO_SEU_PREVIEW_ID"
+id = "eb008c86098d4cae973056d78cd2ec80"
+preview_id = "268959cb794440a4a195345d05547194"
 
 # Environment Variables (configure no Cloudflare Dashboard)
 # ANTHROPIC_API_KEY

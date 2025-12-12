@@ -1,11 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import type { GuideData } from '../types';
+import AdPlaceholder from '../components/AdPlaceholder';
+import AffiliateSection from '../components/AffiliateSection';
+
+interface MonetizationConfig {
+    amazonTag?: string;
+    shopeeId?: string;
+    magaluId?: string;
+    aliexpressId?: string;
+    mercadolivreId?: string;
+    adSensePubId?: string;
+    adSenseSlotId?: string;
+}
 
 export default function Guide() {
     const { slug } = useParams<{ slug: string }>();
     const navigate = useNavigate();
     const [guide, setGuide] = useState<GuideData | null>(null);
+    const [monetization, setMonetization] = useState<MonetizationConfig>({});
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -14,7 +27,6 @@ export default function Guide() {
             navigate('/');
             return;
         }
-
         fetchGuide();
     }, [slug]);
 
@@ -25,6 +37,9 @@ export default function Guide() {
 
             if (data.success && data.data) {
                 setGuide(data.data);
+                if (data.monetization) {
+                    setMonetization(data.monetization);
+                }
                 document.title = `${data.data.title} | Guia Games BR`;
             } else {
                 setError(data.error || 'Guia não encontrado');
@@ -92,6 +107,14 @@ export default function Guide() {
             {/* Content */}
             <section className="py-12 px-4">
                 <div className="container mx-auto max-w-4xl">
+
+                    {/* AD Space: Topo */}
+                    <AdPlaceholder
+                        pubId={monetization.adSensePubId}
+                        slotId={monetization.adSenseSlotId}
+                        label="Anúncio Topo"
+                    />
+
                     <div className="bg-dark-800 rounded-xl p-8 md:p-12 border border-dark-700">
                         {/* Códigos */}
                         {guide.codes && guide.codes.length > 0 && (
@@ -126,12 +149,11 @@ export default function Guide() {
                             </div>
                         )}
 
-                        {/* Content HTML - Com proteção contra objetos */}
+                        {/* Content HTML */}
                         <div className="prose prose-invert prose-lg max-w-none prose-headings:text-gray-100 prose-p:text-gray-300 prose-a:text-primary-400 prose-strong:text-primary-300 mb-12">
                             {typeof guide.content === 'string' ? (
                                 <div dangerouslySetInnerHTML={{ __html: guide.content }} />
                             ) : (
-                                // Fallback se vier objeto
                                 <div className="text-gray-300 whitespace-pre-wrap">
                                     {Array.isArray(guide.content)
                                         ? (guide.content as string[]).join('\n')
@@ -139,6 +161,13 @@ export default function Guide() {
                                 </div>
                             )}
                         </div>
+
+                        {/* AD Space: Meio do Conteúdo */}
+                        <AdPlaceholder
+                            pubId={monetization.adSensePubId}
+                            slotId={monetization.adSenseSlotId}
+                            label="Anúncio Meio"
+                        />
 
                         {/* Steps (Passo a Passo) */}
                         {guide.steps && guide.steps.length > 0 && (
@@ -200,6 +229,10 @@ export default function Guide() {
                                 </ul>
                             </div>
                         )}
+
+                        {/* SEÇÃO DE AFILIADOS E OFERTAS */}
+                        <AffiliateSection game={guide.game} config={monetization} />
+
                     </div>
 
                     {/* Actions */}

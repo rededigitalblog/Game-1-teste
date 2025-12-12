@@ -6,7 +6,6 @@ interface Env {
 
 export const onRequestGet: PagesFunction<Env> = async (context) => {
     try {
-        // Verificar autenticação (Token JWT Bearer)
         const authHeader = context.request.headers.get('Authorization');
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             return new Response(JSON.stringify({ success: false, error: 'Não autorizado' }), {
@@ -15,10 +14,6 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
             });
         }
 
-        // Aqui deveríamos validar o token, mas para simplificar vamos confiar 
-        // que o frontend só manda se tiver logado.
-        // Numa implementação real, validaríamos a assinatura do token.
-
         const configStr = await context.env.ADMIN_KV.get('admin:config');
         let config: any = {};
 
@@ -26,12 +21,23 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
             config = JSON.parse(configStr);
         }
 
-        // Mascarar chaves sensíveis antes de enviar para o frontend
         const safeConfig = {
             ...config,
-            geminiApiKey: config.geminiApiKey ? '********' : '', // Indica se está configurado
+            geminiApiKey: config.geminiApiKey ? '********' : '',
             anthropicApiKey: config.anthropicApiKey ? '********' : '',
-            siteName: config.siteName || 'Guia Games BR'
+            siteName: config.siteName || 'Guia Games BR',
+            enableAiGeneration: config.enableAiGeneration,
+
+            // Afiliados (valores públicos/semi-públicos)
+            amazonTag: config.amazonTag || '',
+            shopeeId: config.shopeeId || '',
+            magaluId: config.magaluId || '',
+            aliexpressId: config.aliexpressId || '',
+            mercadolivreId: config.mercadolivreId || '',
+
+            // Ads
+            adSensePubId: config.adSensePubId || '',
+            adSenseSlotId: config.adSenseSlotId || ''
         };
 
         return new Response(JSON.stringify({ success: true, config: safeConfig }), {
@@ -52,30 +58,40 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
         const data: any = await context.request.json();
 
-        // Ler config atual para preservar o que não foi enviado
         const currentConfigStr = await context.env.ADMIN_KV.get('admin:config');
         let currentConfig: any = {};
         if (currentConfigStr) {
             currentConfig = JSON.parse(currentConfigStr);
         }
 
-        // Atualizar campos apenas se foram enviados e não estão vazios
         const newConfig = { ...currentConfig };
 
+        // API Keys
         if (data.geminiApiKey && data.geminiApiKey !== '********') {
             newConfig.geminiApiKey = data.geminiApiKey;
         }
         if (data.anthropicApiKey && data.anthropicApiKey !== '********') {
             newConfig.anthropicApiKey = data.anthropicApiKey;
         }
-        if (data.siteName) {
-            newConfig.siteName = data.siteName;
-        }
+
+        // Configs Gerais
+        if (data.siteName) newConfig.siteName = data.siteName;
         if (typeof data.enableAiGeneration === 'boolean') {
             newConfig.enableAiGeneration = data.enableAiGeneration;
         }
 
-        // Salvar no KV
+        // Afiliados & Ads (Sem validação stricta, aceita o que vier se não for undefined)
+        const fields = [
+            'amazonTag', 'shopeeId', 'magaluId', 'aliexpressId', 'mercadolivreId',
+            'adSensePubId', 'adSenseSlotId'
+        ];
+
+        fields.forEach(field => {
+            if (data[field] !== undefined) {
+                newConfig[field] = data[field];
+            }
+        });
+
         await context.env.ADMIN_KV.put('admin:config', JSON.stringify(newConfig));
 
         return new Response(JSON.stringify({ success: true }), {

@@ -46,7 +46,7 @@ export default function AdminLogin() {
                 setError(data.error || 'Credenciais inválidas');
             }
         } catch (err) {
-            setError('Erro ao fazer login');
+            setError(err instanceof Error ? err.message : 'Erro ao conectar ao servidor');
         } finally {
             setIsLoading(false);
         }

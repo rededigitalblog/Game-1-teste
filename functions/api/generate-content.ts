@@ -113,6 +113,17 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         const now = new Date().toISOString();
         const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(); // 7 dias
 
+        // Sanitiza o conteúdo para garantir que seja string
+        let processedContent = '';
+        if (Array.isArray(guideData.content)) {
+            processedContent = guideData.content.map(p => `<p>${p}</p>`).join('\n');
+        } else if (typeof guideData.content === 'object' && guideData.content !== null) {
+            // Se for objeto, tenta extrair valores ou converte para JSON
+            processedContent = JSON.stringify(guideData.content);
+        } else {
+            processedContent = guideData.content || '';
+        }
+
         const fullGuide: GuideData = {
             id,
             slug,
@@ -121,11 +132,11 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
             title: guideData.title || `Guia de ${query}`,
             subtitle: guideData.subtitle || '',
             metaDescription: guideData.metaDescription || '',
-            content: guideData.content || '',
+            content: processedContent, // Conteúdo sanitizado
             readTime: guideData.readTime || 5,
             difficulty: guideData.difficulty || 'medio',
             tags: guideData.tags || [],
-            imageUrl: '', // Será preenchido depois com Unsplash
+            imageUrl: '',
             imageQuery: guideData.imageQuery || query,
             codes: guideData.codes,
             steps: guideData.steps,

@@ -1,6 +1,16 @@
+import { Link } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 
 export default function Home() {
+    // Helper simples para slugs otimizados
+    const makeSlug = (text: string, prefix = '') => {
+        const slug = text.toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove acentos
+            .replace(/[^\w\s-]/g, '') // Remove caracteres especiais
+            .replace(/\s+/g, '-'); // Espaço vira traço
+        return prefix ? `/${prefix}-${slug}` : `/${slug}`;
+    };
+
     return (
         <div className="min-h-screen">
             {/* Hero Section */}
@@ -22,7 +32,7 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Features */}
+            {/* Features / Categorias */}
             <section className="py-16 px-4">
                 <div className="container mx-auto">
                     <h2 className="text-3xl md:text-4xl font-gaming font-bold text-center mb-12 text-gray-100">
@@ -30,16 +40,20 @@ export default function Home() {
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {[
-                            { icon: '🎁', title: 'Códigos Grátis', desc: 'Códigos ativos e recompensas' },
-                            { icon: '📚', title: 'Guias Completos', desc: 'Tutoriais passo a passo' },
-                            { icon: '🏆', title: 'Tier Lists', desc: 'Rankings do meta atual' },
-                            { icon: '⚡', title: 'Builds', desc: 'Estratégias testadas' },
+                            { icon: '🎁', title: 'Códigos', desc: 'Resgatar recompensas', slug: 'codigos-jogos-mobile-populares' },
+                            { icon: '📚', title: 'Guias', desc: 'Tutoriais e dicas', slug: 'guia-iniciante-jogos-mobile' },
+                            { icon: '🏆', title: 'Tier Lists', desc: 'Rankings do meta', slug: 'tier-list-melhores-personagens-rpg' },
+                            { icon: '⚡', title: 'Builds', desc: 'Estratégias meta', slug: 'melhores-builds-jogos-mobile' },
                         ].map((item, i) => (
-                            <div key={i} className="bg-dark-800 rounded-xl p-6 border border-dark-700 hover:border-primary-500 transition-colors">
-                                <div className="text-4xl mb-4">{item.icon}</div>
+                            <Link
+                                key={i}
+                                to={`/${item.slug}`}
+                                className="bg-dark-800 rounded-xl p-6 border border-dark-700 hover:border-primary-500 hover:bg-dark-700/50 transition-all group"
+                            >
+                                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">{item.icon}</div>
                                 <h3 className="text-xl font-bold mb-2 text-gray-100">{item.title}</h3>
                                 <p className="text-gray-400 text-sm">{item.desc}</p>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 </div>
@@ -60,10 +74,14 @@ export default function Home() {
                             { name: 'Brawl Stars', icon: '⭐' },
                             { name: 'Clash Royale', icon: '👑' },
                         ].map((game, i) => (
-                            <div key={i} className="bg-dark-800 rounded-xl p-6 text-center border border-dark-700 hover:border-primary-500 transition-colors cursor-pointer">
-                                <div className="text-4xl mb-2">{game.icon}</div>
+                            <Link
+                                key={i}
+                                to={makeSlug(game.name, 'codigos')}
+                                className="bg-dark-800 rounded-xl p-6 text-center border border-dark-700 hover:border-primary-500 hover:bg-dark-700/50 transition-all cursor-pointer group"
+                            >
+                                <div className="text-4xl mb-2 group-hover:scale-110 transition-transform duration-300">{game.icon}</div>
                                 <p className="font-semibold text-gray-100">{game.name}</p>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 </div>

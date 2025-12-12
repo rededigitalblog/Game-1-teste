@@ -16,6 +16,11 @@ binding = "METADATA_KV"
 id = "eb008c86098d4cae973056d78cd2ec80"
 preview_id = "268959cb794440a4a195345d05547194"
 
+[[kv_namespaces]]
+binding = "ADMIN_KV"
+id = "55ad471d28834926addce0c5449b1fcf"
+preview_id = "e822034401fc4e3dbf5c141317704ac1"
+
 # Environment Variables (configure no Cloudflare Dashboard)
 # ANTHROPIC_API_KEY
 # UNSPLASH_ACCESS_KEY (opcional)

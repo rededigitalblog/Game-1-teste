@@ -11,6 +11,11 @@ export default function Home() {
         return prefix ? `/${prefix}-${slug}` : `/${slug}`;
     };
 
+    const scrollToId = (id: string) => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
     return (
         <div className="min-h-screen bg-dark-900 text-gray-100 overflow-x-hidden selection:bg-primary-500/30">
             {/* Header Minimalista */}
@@ -25,9 +30,15 @@ export default function Home() {
                         </span>
                     </Link>
                     <div className="hidden md:flex gap-6 text-sm font-semibold text-gray-400">
-                        <span className="hover:text-white cursor-pointer transition-colors">Populares</span>
-                        <span className="hover:text-white cursor-pointer transition-colors">Códigos</span>
-                        <span className="hover:text-white cursor-pointer transition-colors">Tier Lists</span>
+                        <button onClick={() => scrollToId('games-populares')} className="hover:text-white cursor-pointer transition-colors focus:outline-none">
+                            Populares
+                        </button>
+                        <Link to="/codigos-jogos-mobile-populares" className="hover:text-white cursor-pointer transition-colors">
+                            Códigos
+                        </Link>
+                        <Link to="/tier-list-melhores-personagens-rpg" className="hover:text-white cursor-pointer transition-colors">
+                            Tier Lists
+                        </Link>
                     </div>
                 </div>
             </nav>
@@ -61,7 +72,7 @@ export default function Home() {
             </section>
 
             {/* Features / Categorias */}
-            <section className="py-20 px-4 relative z-10">
+            <section className="py-20 px-4 relative z-10" id="categorias">
                 <div className="container mx-auto max-w-6xl">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {[
@@ -75,7 +86,7 @@ export default function Home() {
                                 to={`/${item.slug}`}
                                 className={`
                                     relative overflow-hidden rounded-2xl p-8 border border-dark-700 bg-dark-800/80 backdrop-blur-sm
-                                    hover:border-primary-500/50 hover:shadow-[0_0_30px_rgba(124,58,237,0.15)] 
+                                    hover:border-primary-500/50 hover:shadow-[0_0_30px_rgba(124,58,237,0.15)]
                                     transition-all duration-300 group hover:-translate-y-1
                                 `}
                             >
@@ -95,7 +106,7 @@ export default function Home() {
             </section>
 
             {/* Popular Games */}
-            <section className="py-20 px-4 bg-dark-800/30 border-t border-dark-800">
+            <section className="py-20 px-4 bg-dark-800/30 border-t border-dark-800" id="games-populares">
                 <div className="container mx-auto">
                     <div className="flex items-center justify-between mb-12">
                         <h2 className="text-2xl md:text-3xl font-gaming font-bold text-gray-100">

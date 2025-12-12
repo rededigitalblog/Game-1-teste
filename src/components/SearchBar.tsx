@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { validateQuery } from '../utils/contentDetection';
 
@@ -7,6 +7,31 @@ export default function SearchBar() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
+
+    const [loadingText, setLoadingText] = useState('Buscando...');
+
+    // Efeito para rotacionar frases divertidas de loading
+    useEffect(() => {
+        let interval: ReturnType<typeof setInterval>;
+        if (isLoading) {
+            const phrases = [
+                "Buscando...",
+                "Vasculhando o servidor...",
+                "Consultando o oráculo...",
+                "Quase lá...",
+                "Essa é difícil, pera aí...",
+                "Tá vindo!",
+                "Invocando a IA..."
+            ];
+            let i = 0;
+            setLoadingText(phrases[0]);
+            interval = setInterval(() => {
+                i = (i + 1) % phrases.length;
+                setLoadingText(phrases[i]);
+            }, 800);
+        }
+        return () => clearInterval(interval);
+    }, [isLoading]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -67,12 +92,12 @@ export default function SearchBar() {
                     <button
                         type="submit"
                         disabled={isLoading || !query.trim()}
-                        className="absolute right-2 top-2 bottom-2 px-6 bg-primary-600 hover:bg-primary-500 text-white font-bold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_10px_rgba(124,58,237,0.3)] hover:shadow-[0_0_20px_rgba(124,58,237,0.6)] transform hover:scale-105 active:scale-95"
+                        className={`absolute right-2 top-2 bottom-2 px-6 bg-primary-600 hover:bg-primary-500 text-white font-bold rounded-lg transition-all disabled:opacity-80 disabled:cursor-wait shadow-[0_0_10px_rgba(124,58,237,0.3)] hover:shadow-[0_0_20px_rgba(124,58,237,0.6)] ${isLoading ? 'min-w-[140px]' : ''}`}
                     >
                         {isLoading ? (
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center justify-center gap-2 animate-fade-in">
                                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                <span>Buscando...</span>
+                                <span className="text-sm whitespace-nowrap">{loadingText}</span>
                             </div>
                         ) : (
                             'Buscar'
@@ -82,7 +107,7 @@ export default function SearchBar() {
             </div>
 
             {/* Exemplos de busca - Design Chips Melhorado */}
-            <div className="mt-6 text-center animate-fade-in-up">
+            <div className={`mt-6 text-center transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
                 <p className="text-gray-500 text-sm mb-3 font-medium tracking-wide uppercase text-xs">
                     Buscas em Alta 🔥
                 </p>

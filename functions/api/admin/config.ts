@@ -71,6 +71,9 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         if (data.siteName) {
             newConfig.siteName = data.siteName;
         }
+        if (typeof data.enableAiGeneration === 'boolean') {
+            newConfig.enableAiGeneration = data.enableAiGeneration;
+        }
 
         // Salvar no KV
         await context.env.ADMIN_KV.put('admin:config', JSON.stringify(newConfig));

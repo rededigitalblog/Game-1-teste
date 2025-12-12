@@ -8,6 +8,7 @@ interface Env {
     ANTHROPIC_API_KEY: string;
     GUIDES_KV: KVNamespace;
     METADATA_KV: KVNamespace;
+    ADMIN_KV: KVNamespace;
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
@@ -56,6 +57,34 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
                     }
                 );
             }
+        }
+
+        // =================================================================
+        // Verifica configurações do Admin (Geração de IA) antes de prosseguir
+        // =================================================================
+        try {
+            const configStr = await env.ADMIN_KV.get('admin:config');
+            if (configStr) {
+                const config = JSON.parse(configStr);
+                // Se a opção existir e for explicitamente false, bloqueia
+                if (config.enableAiGeneration === false) {
+                    console.log('Geração por IA desativada pelo admin.');
+                    return new Response(
+                        JSON.stringify({
+                            success: false,
+                            error: 'Conteúdo não encontrado e geração automática desativada.',
+                            notFound: true // Flag para o frontend saber que é 404 real
+                        }),
+                        {
+                            status: 404, // Retorna 404 Not Found
+                            headers: { 'Content-Type': 'application/json' },
+                        }
+                    );
+                }
+            }
+        } catch (e) {
+            console.error('Erro ao ler configs de admin:', e);
+            // Em caso de erro ao ler config (ex: KV indisponível), assume default (true) e continua
         }
 
         console.log('Cache MISS, gerando conteúdo...');

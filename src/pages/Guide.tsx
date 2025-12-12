@@ -126,11 +126,65 @@ export default function Guide() {
                             </div>
                         )}
 
-                        {/* Content HTML */}
-                        <div
-                            className="prose prose-invert prose-lg max-w-none prose-headings:text-gray-100 prose-p:text-gray-300 prose-a:text-primary-400 prose-strong:text-primary-300"
-                            dangerouslySetInnerHTML={{ __html: guide.content }}
-                        />
+                        {/* Content HTML - Com proteção contra objetos */}
+                        <div className="prose prose-invert prose-lg max-w-none prose-headings:text-gray-100 prose-p:text-gray-300 prose-a:text-primary-400 prose-strong:text-primary-300 mb-12">
+                            {typeof guide.content === 'string' ? (
+                                <div dangerouslySetInnerHTML={{ __html: guide.content }} />
+                            ) : (
+                                // Fallback se vier objeto
+                                <div className="text-gray-300 whitespace-pre-wrap">
+                                    {Array.isArray(guide.content)
+                                        ? (guide.content as string[]).join('\n')
+                                        : JSON.stringify(guide.content)}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Steps (Passo a Passo) */}
+                        {guide.steps && guide.steps.length > 0 && (
+                            <div className="mb-12">
+                                <h2 className="text-2xl font-gaming font-bold mb-6 text-gray-100">📝 Passo a Passo</h2>
+                                <div className="space-y-6">
+                                    {guide.steps.map((step, i) => (
+                                        <div key={i} className="flex gap-4">
+                                            <div className="flex-shrink-0 w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center font-bold text-white shadow-lg shadow-primary-900/50">
+                                                {i + 1}
+                                            </div>
+                                            <div className="bg-dark-700/50 rounded-lg p-6 border border-dark-600 flex-grow">
+                                                <p className="text-gray-200 text-lg leading-relaxed">{step}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Tier List */}
+                        {guide.tierList && (
+                            <div className="mb-12">
+                                <h2 className="text-2xl font-gaming font-bold mb-6 text-gray-100">🏆 Tier List</h2>
+                                <div className="space-y-4">
+                                    {Object.entries(guide.tierList).map(([tier, items]) => (
+                                        <div key={tier} className="flex items-stretch border border-dark-600 rounded-lg overflow-hidden">
+                                            <div className={`w-24 flex-shrink-0 flex items-center justify-center text-2xl font-bold
+                                                ${tier === 'S' ? 'bg-red-600 text-white' :
+                                                    tier === 'A' ? 'bg-orange-500 text-white' :
+                                                        tier === 'B' ? 'bg-yellow-500 text-black' :
+                                                            tier === 'C' ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'}`}>
+                                                {tier}
+                                            </div>
+                                            <div className="bg-dark-700 p-4 flex-grow flex flex-wrap gap-2">
+                                                {items.map((item: any, idx: number) => (
+                                                    <span key={idx} className="px-3 py-1 bg-dark-900 rounded border border-dark-600 text-gray-200" title={item.reason}>
+                                                        {item.name}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Tips */}
                         {guide.tips && guide.tips.length > 0 && (

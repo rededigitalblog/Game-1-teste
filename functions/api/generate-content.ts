@@ -71,8 +71,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
         // Chama Claude API
         const message = await anthropic.messages.create({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 4096,
+            model: 'claude-3-5-haiku-20241022',
+            max_tokens: 3000,
             temperature: 0.7,
             system: systemPrompt,
             messages: [

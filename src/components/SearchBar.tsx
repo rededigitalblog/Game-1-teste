@@ -57,7 +57,7 @@ export default function SearchBar() {
                     disabled={isLoading || !query.trim()}
                     className="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    {isLoading ? 'Gerando...' : 'Buscar'}
+                    {isLoading ? 'Buscando...' : 'Buscar'}
                 </button>
             </div>
             {error && (

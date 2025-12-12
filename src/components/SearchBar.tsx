@@ -48,7 +48,8 @@ export default function SearchBar() {
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Ex: códigos free fire, tier list genshin impact..."
+                    placeholder="Ex: tier free fire, códigos roblox..."
+                    maxLength={50}
                     className="w-full px-6 py-4 bg-dark-800 border-2 border-dark-700 rounded-xl text-gray-100 placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
                     disabled={isLoading}
                 />
@@ -60,8 +61,33 @@ export default function SearchBar() {
                     {isLoading ? 'Buscando...' : 'Buscar'}
                 </button>
             </div>
+
+            {/* Exemplos de busca */}
+            <div className="mt-3 text-center">
+                <p className="text-gray-500 text-sm mb-2">
+                    💡 Use palavras-chave curtas (máx. 50 caracteres):
+                </p>
+                <div className="flex flex-wrap gap-2 justify-center">
+                    {[
+                        'tier free fire',
+                        'códigos roblox',
+                        'build yasuo',
+                        'guia genshin'
+                    ].map((example) => (
+                        <button
+                            key={example}
+                            type="button"
+                            onClick={() => setQuery(example)}
+                            className="px-3 py-1 bg-dark-700 hover:bg-dark-600 text-gray-300 text-xs rounded-full transition-colors border border-dark-600 hover:border-primary-500"
+                        >
+                            {example}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
             {error && (
-                <p className="mt-2 text-red-400 text-sm">{error}</p>
+                <p className="mt-2 text-red-400 text-sm text-center">{error}</p>
             )}
         </form>
     );

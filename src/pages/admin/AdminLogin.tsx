@@ -105,9 +105,9 @@ export default function AdminLogin() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {isLoading ? 'Entrando...' : 'Entrar'}
+                            {isLoading ? 'Entrando...' : 'Acessar Painel (v2)'}
                         </button>
                     </form>
 

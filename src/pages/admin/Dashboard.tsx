@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import AdminLayout from '../../components/admin/AdminLayout';
 
 export default function Dashboard() {
+    const { adminPath } = useParams<{ adminPath: string }>();
     const navigate = useNavigate();
     const [stats, setStats] = useState({
         totalPosts: 0,
@@ -16,12 +17,12 @@ export default function Dashboard() {
         // Verifica autenticação
         const session = localStorage.getItem('admin_session');
         if (!session) {
-            navigate('/admin');
+            navigate(`/admin/${adminPath}`);
             return;
         }
 
         fetchStats();
-    }, [navigate]);
+    }, [navigate, adminPath]);
 
     const fetchStats = async () => {
         try {
@@ -87,7 +88,7 @@ export default function Dashboard() {
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <Link
-                    to="new-post"
+                    to={`/admin/${adminPath}/new-post`}
                     className="bg-primary-600 hover:bg-primary-700 p-6 rounded-xl transition-colors"
                 >
                     <div className="flex items-center justify-between">
@@ -100,7 +101,7 @@ export default function Dashboard() {
                 </Link>
 
                 <Link
-                    to="posts"
+                    to={`/admin/${adminPath}/posts`}
                     className="bg-dark-800 hover:bg-dark-700 p-6 rounded-xl border border-dark-700 transition-colors"
                 >
                     <div className="flex items-center justify-between">

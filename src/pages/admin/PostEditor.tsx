@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { validateImageUrl, sanitizeHTML } from '../../utils/adminSecurity';
 import type { ContentType, Difficulty } from '../../types';
 
 export default function PostEditor() {
+    const { adminPath } = useParams<{ adminPath: string }>();
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [subtitle, setSubtitle] = useState('');
@@ -65,7 +66,7 @@ export default function PostEditor() {
         try {
             const session = localStorage.getItem('admin_session');
             if (!session) {
-                navigate('/admin');
+                navigate(`/admin/${adminPath}`);
                 return;
             }
 
@@ -94,7 +95,7 @@ export default function PostEditor() {
             if (data.success) {
                 setSuccess('Post salvo com sucesso!');
                 setTimeout(() => {
-                    navigate('../posts');
+                    navigate(`/admin/${adminPath}/posts`);
                 }, 1500);
             } else {
                 setError(data.error || 'Erro ao salvar post');
@@ -276,7 +277,7 @@ export default function PostEditor() {
                             {isSaving ? 'Salvando...' : 'Salvar Post'}
                         </button>
                         <button
-                            onClick={() => navigate('../posts')}
+                            onClick={() => navigate(`/admin/${adminPath}/posts`)}
                             className="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-gray-300 font-semibold rounded-lg transition-colors"
                         >
                             Cancelar

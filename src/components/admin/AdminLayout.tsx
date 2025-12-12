@@ -11,7 +11,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
     const handleLogout = () => {
         localStorage.removeItem('admin_session');
-        navigate(`/${adminPath}`);
+        navigate(`/admin/${adminPath}`);
     };
 
     return (
@@ -24,16 +24,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                             Guia Games BR
                         </h1>
                         <nav className="hidden md:flex space-x-6">
-                            <Link to={`/${adminPath}/dashboard`} className="text-gray-300 hover:text-primary-400 transition-colors">
+                            <Link to={`/admin/${adminPath}/dashboard`} className="text-gray-300 hover:text-primary-400 transition-colors">
                                 📊 Dashboard
                             </Link>
-                            <Link to={`/${adminPath}/posts`} className="text-gray-300 hover:text-primary-400 transition-colors">
+                            <Link to={`/admin/${adminPath}/posts`} className="text-gray-300 hover:text-primary-400 transition-colors">
                                 📝 Posts
                             </Link>
-                            <Link to={`/${adminPath}/new-post`} className="text-gray-300 hover:text-primary-400 transition-colors">
+                            <Link to={`/admin/${adminPath}/new-post`} className="text-gray-300 hover:text-primary-400 transition-colors">
                                 ➕ Novo Post
                             </Link>
-                            <Link to={`/${adminPath}/settings`} className="text-gray-300 hover:text-primary-400 transition-colors">
+                            <Link to={`/admin/${adminPath}/settings`} className="text-gray-300 hover:text-primary-400 transition-colors">
                                 ⚙️ Configurações
                             </Link>
                         </nav>

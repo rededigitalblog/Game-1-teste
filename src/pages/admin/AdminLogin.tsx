@@ -15,7 +15,7 @@ export default function AdminLogin() {
         if (session) {
             const sessionData = JSON.parse(session);
             if (sessionData.expiresAt > Date.now()) {
-                navigate(`/${adminPath}/dashboard`);
+                navigate(`/admin/${adminPath}/dashboard`);
             }
         }
     }, [adminPath, navigate]);
@@ -41,7 +41,7 @@ export default function AdminLogin() {
                     expiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 horas
                 }));
 
-                navigate(`/${adminPath}/dashboard`);
+                navigate(`/admin/${adminPath}/dashboard`);
             } else {
                 setError(data.error || 'Credenciais inválidas');
             }

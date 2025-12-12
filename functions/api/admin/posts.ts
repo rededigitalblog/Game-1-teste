@@ -1,5 +1,5 @@
-import { slugify, generateId, generateKVKey } from '../../src/utils/slugify';
-import type { GuideData } from '../../src/types';
+import { slugify, generateId, generateKVKey } from '../../utils/slugify';
+import type { GuideData } from '../../types';
 
 interface Env {
     ADMIN_KV: KVNamespace;

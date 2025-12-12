@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
-import type { GuideData, GenerateContentRequest, GenerateContentResponse } from '../../src/types';
-import { detectContentType, extractGameName } from '../../src/utils/contentDetection';
-import { slugify, generateId, generateKVKey } from '../../src/utils/slugify';
+import type { GuideData, GenerateContentRequest, GenerateContentResponse } from '../types';
+import { detectContentType, extractGameName } from '../utils/contentDetection';
+import { slugify, generateId, generateKVKey } from '../utils/slugify';
 import { getSystemPrompt, getUserPrompt } from '../config/prompts';
 
 interface Env {

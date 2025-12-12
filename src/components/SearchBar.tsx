@@ -28,7 +28,7 @@ export default function SearchBar() {
             interval = setInterval(() => {
                 i = (i + 1) % phrases.length;
                 setLoadingText(phrases[i]);
-            }, 800);
+            }, 3500);
         }
         return () => clearInterval(interval);
     }, [isLoading]);

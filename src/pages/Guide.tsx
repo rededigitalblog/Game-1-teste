@@ -30,7 +30,7 @@ function CreativeLoading() {
     useEffect(() => {
         const interval = setInterval(() => {
             setMsgIndex(prev => (prev + 1) % messages.length);
-        }, 1500);
+        }, 4000);
         return () => clearInterval(interval);
     }, []);
 

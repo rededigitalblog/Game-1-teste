@@ -21,7 +21,7 @@ RESTRIÇÕES:
 - NÃO copiar conteúdo de outros sites literalmente`;
 
 export const PROMPTS: Record<ContentType, (topic: string, game: string) => string> = {
-    codigos: (topic: string, game: string) => `
+  codigos: (topic: string, game: string) => `
 Crie um guia completo de CÓDIGOS ATIVOS para o jogo: ${game}
 
 REQUISITOS:
@@ -62,7 +62,7 @@ JSON ESPERADO:
 IMPORTANTE: Pesquise códigos reais que estejam funcionando. Se não encontrar códigos verificados, informe no JSON que são códigos históricos ou de exemplo.
 `,
 
-    tutorial: (topic: string, game: string) => `
+  tutorial: (topic: string, game: string) => `
 Crie um guia TUTORIAL completo sobre: ${topic} no jogo ${game}
 
 REQUISITOS:
@@ -107,7 +107,7 @@ JSON ESPERADO:
 }
 `,
 
-    tierlist: (topic: string, game: string) => `
+  tierlist: (topic: string, game: string) => `
 Crie uma TIER LIST atualizada de ${topic} para o jogo: ${game}
 
 REQUISITOS:
@@ -150,7 +150,7 @@ JSON ESPERADO:
 }
 `,
 
-    build: (topic: string, game: string) => `
+  build: (topic: string, game: string) => `
 Crie uma BUILD/ESTRATÉGIA completa para: ${topic} no jogo ${game}
 
 REQUISITOS:
@@ -192,14 +192,32 @@ JSON ESPERADO:
   },
   "content": "<p>Introdução...</p><h2>Itens Essenciais</h2><ol>...</ol>..."
 }
-`,
+`
 };
 
 export function getSystemPrompt(): string {
-    return SYSTEM_PROMPT;
+  return SYSTEM_PROMPT;
 }
 
 export function getUserPrompt(type: ContentType, topic: string, game: string): string {
-    const promptFunction = PROMPTS[type];
-    return promptFunction(topic, game);
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const nextYear = currentYear + 1;
+  // Considera "final de ano" a partir de Outubro (mês 9) para já começar a rankear para o ano seguinte
+  const isLateYear = now.getMonth() >= 9;
+
+  // Define qual ano a IA deve priorizar nos títulos
+  const targetYear = isLateYear ? nextYear : currentYear;
+
+  const yearContext = `
+CONTEXTO TEMPORAL OBRIGATÓRIO:
+- Hoje é: ${now.toLocaleDateString('pt-BR')}
+- Ano para Títulos: Use "${targetYear}" ou termos como "Atuais", "Hoje", "Recentes", "Atualizado".
+- PROIBIDO: Usar anos anteriores a ${currentYear} (ex: ${currentYear - 1}) nos títulos, a menos que seja um artigo histórico.
+- SE O USUÁRIO PEDIR UM ANO ANTIGO NA QUERY, SUBSTITUA PELO ANO ATUAL/FUTURO NO TÍTULO E CONTEÚDO.
+- NOTA: Para aumentar o CTR, prefira "Ativos Agora" ou "${targetYear}" em vez de deixar sem data.
+`;
+
+  const promptFunction = PROMPTS[type];
+  return yearContext + promptFunction(topic, game);
 }

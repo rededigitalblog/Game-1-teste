@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import type { GuideData } from '../types';
 import AdPlaceholder from '../components/AdPlaceholder';
 import AffiliateSection from '../components/AffiliateSection';
+import SEO from '../components/SEO';
 
 interface MonetizationConfig {
     amazonTag?: string;
@@ -12,6 +13,53 @@ interface MonetizationConfig {
     mercadolivreId?: string;
     adSensePubId?: string;
     adSenseSlotId?: string;
+}
+
+// Componente de Loading Criativo
+function CreativeLoading() {
+    const messages = [
+        "Acessando o banco de dados...",
+        "Busca profunda em andamento...",
+        "Varrrendo servidores secretos...",
+        "Será que tem o que você quer? Rsrs...",
+        "Consultando oráculo gamer...",
+        "Quase lá..."
+    ];
+    const [msgIndex, setMsgIndex] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setMsgIndex(prev => (prev + 1) % messages.length);
+        }, 1500);
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-dark-900">
+            <div className="text-center p-8 max-w-md w-full">
+                <div className="relative w-20 h-20 mx-auto mb-8">
+                    {/* Efeito Glow Pulsante */}
+                    <div className="absolute inset-0 bg-primary-500 rounded-full blur-xl opacity-50 animate-pulse"></div>
+                    <div className="relative w-full h-full border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+                    <div className="absolute inset-0 flex items-center justify-center text-2xl animate-bounce">
+                        🚀
+                    </div>
+                </div>
+
+                <h2 className="text-xl font-bold text-gray-100 mb-2 min-h-[3rem] transition-all">
+                    {messages[msgIndex]}
+                </h2>
+                <p className="text-gray-500 text-sm">
+                    Isso pode levar alguns segundos...
+                </p>
+
+                {/* Barra de progresso fake para dar sensação de movimento */}
+                <div className="mt-8 h-1 w-full bg-dark-700 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-primary-600 to-purple-600 w-1/2 animate-[shimmer_2s_infinite_linear]"></div>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 export default function Guide() {
@@ -52,21 +100,14 @@ export default function Guide() {
     };
 
     if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-gray-400">Carregando guia...</p>
-                </div>
-            </div>
-        );
+        return <CreativeLoading />;
     }
 
     if (error || !guide) {
         return (
             <div className="min-h-screen flex items-center justify-center px-4">
                 <div className="text-center">
-                    <h2 className="text-2xl font-bold text-red-400 mb-4">Erro</h2>
+                    <h2 className="text-2xl font-bold text-red-400 mb-4">Ops!</h2>
                     <p className="text-gray-400 mb-6">{error}</p>
                     <button
                         onClick={() => navigate('/')}
@@ -79,8 +120,40 @@ export default function Guide() {
         );
     }
 
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": guide.title,
+        "description": guide.subtitle || `Guia completo sobre ${guide.game}`,
+        "datePublished": guide.createdAt || new Date().toISOString(),
+        "dateModified": new Date().toISOString(),
+        "author": {
+            "@type": "Organization",
+            "name": "Guia Games BR",
+            "url": "https://guiagames.pages.dev"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Guia Games BR",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://guiagames.pages.dev/vite.svg"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": window.location.href
+        }
+    };
+
     return (
         <div className="min-h-screen">
+            <SEO
+                title={`${guide.title} | Guia Games BR`}
+                description={guide.subtitle || `Códigos atualizados, dicas e estratégias para ${guide.game}.`}
+                jsonLd={jsonLd}
+            />
+
             {/* Header */}
             <section className="py-16 px-4 bg-gradient-to-br from-primary-900/20 via-dark-900 to-purple-900/20">
                 <div className="container mx-auto max-w-4xl">

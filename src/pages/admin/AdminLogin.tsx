@@ -60,7 +60,7 @@ export default function AdminLogin() {
                     <h1 className="text-4xl font-gaming font-bold gradient-text mb-2">
                         Guia Games BR
                     </h1>
-                    <p className="text-gray-400">Painel Administrativo</p>
+                    <p className="text-gray-400">Painel Administrativo v2.1</p>
                 </div>
 
                 {/* Login Form */}
